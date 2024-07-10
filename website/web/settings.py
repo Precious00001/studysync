@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'discord',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +67,8 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTH_USER_MODEL = 'discord.CustomUser'
 
 WSGI_APPLICATION = 'web.wsgi.application'
 
