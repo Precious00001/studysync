@@ -43,3 +43,37 @@ def home(request):
 
     # Render the home template with the provided context
     return render(request, 'discord/home.html', context)
+
+# Define the view for a specific chat room
+def room(request, pk):
+    # Retrieve the room object with the specified primary key (pk)
+    room = Room.objects.get(id=pk)
+    
+    # Retrieve all messages associated with the room
+    room_messages = room.message_set.all()
+    
+    # Retrieve all participants in the room
+    participants = room.participants.all()
+
+    # If the request method is POST (i.e., form submission)
+    if request.method == 'POST':
+        # Create a new message object with the submitted data
+        message = Message.objects.create(
+            user=request.user,
+            room=room,
+            body=request.POST.get('body')
+        )
+        # Add the current user to the participants of the room
+        room.participants.add(request.user) 
+        # Redirect the user back to the current room page
+        return redirect('discord:room', pk=room.id)
+
+    # Prepare the context to be passed to the template
+    context = {
+        'room': room,                         # The current room
+        'room_messages': room_messages,       # Messages in the current room
+        'participants': participants          # Participants in the current room
+    }
+
+    # Render the room template with the provided context
+    return render(request, 'discord/room.html', context)
