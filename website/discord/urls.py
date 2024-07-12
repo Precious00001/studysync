@@ -10,4 +10,8 @@ urlpatterns = [
 
    # User profile management URL
     path('update-user/', views.updateUser, name="update-user"),  # URL for updating user profile
+
+    # Other URLs
+    path('topics/', views.topicsPage, name="topics"),    # URL for displaying topics
+    path('activity/', views.activityPage, name="activity"),  # URL for displaying activity
 ]

@@ -100,3 +100,12 @@ def updateUser(request):
     # Render the user profile update form template with the provided context
     return render(request, 'discord/update-user.html', {'form': form})
 
+# View for displaying topics
+def topicsPage(request):
+    # Get the value of 'q' from the query parameters, defaulting to an empty string if not present
+    q = request.GET.get('q') if request.GET.get('q') is not None else ''
+    # Filter topics based on search query
+    topics = Topic.objects.filter(name__icontains=q)
+    # Render the topics template with the provided context
+    return render(request, 'discord/topics.html', {'topics': topics})
+
