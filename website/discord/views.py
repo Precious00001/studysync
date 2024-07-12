@@ -133,7 +133,7 @@ def registerPage(request):
         # Bind the form with the POST data
         form = UserCreationForm(request.POST)
         # Check if the form data is valid
-                if form.is_valid():
+        if form.is_valid():
             # Save the form data to create a new user, without committing to the database yet
             user = form.save(commit=False)
             # Convert the username to lowercase
@@ -147,6 +147,9 @@ def registerPage(request):
         else:
             # If form validation fails, display an error message
             messages.error(request, 'An error occurred during registration')
+        
+    # Render the login/register template with the form (whether it's empty or bound with data)
+    return render(request, 'discord/login_register.html', {'form': form})
 
 
 
