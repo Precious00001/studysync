@@ -8,7 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 # from django.contrib.auth.models import CustomUser
 from .models import Room, Topic, Message, CustomUser
-# from .forms import RoomForm, UserForm
+from .forms import RoomForm, UserForm
 
 # Create your views here.
 
@@ -77,3 +77,26 @@ def room(request, pk):
 
     # Render the room template with the provided context
     return render(request, 'discord/room.html', context)
+
+# View for updating user profile
+@login_required(login_url='login')  # Ensure that the user is logged in before accessing this view
+def updateUser(request):
+    # Retrieve the current user
+    user = request.user
+    # Create a form instance for updating the user profile with existing data
+    form = UserForm(instance=user)
+
+    # If the request method is POST (i.e., form submission)
+    if request.method == 'POST':
+        # Bind the form with the POST data
+        form = UserForm(request.POST, request.FILES, instance=user)
+        # Check if the form data is valid
+        if form.is_valid():
+            # Save the form data to update the user profile
+            form.save()
+            # Redirect the user to their profile page after updating the profile
+            return redirect('discord:user-profile', pk=user.id)
+
+    # Render the user profile update form template with the provided context
+    return render(request, 'discord/update-user.html', {'form': form})
+
