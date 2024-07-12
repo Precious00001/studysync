@@ -93,6 +93,24 @@ def loginPage(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
+        # Attempt to find a user with the given username
+        try:
+            user = CustomUser.objects.get(username=username)
+        # If the user does not exist, display an error message
+        except CustomUser.DoesNotExist:
+            messages.error(request, 'CustomUser does not exist')
+
+        # Authenticate the user using the provided credentials
+        user = authenticate(request, username=username, password=password)
+
+        # If authentication is successful, log the user in and redirect to the home page
+        if user is not None:
+            login(request, user)
+            return redirect('discord:home')
+        # If authentication fails, display an error message
+        else:
+            messages.error(request, 'CustomUsername OR password does not exist')
+
 
 # Define the view for creating a room
 @login_required(login_url='login')  # Ensure that the user is logged in before accessing this view
