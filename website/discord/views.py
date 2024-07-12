@@ -78,6 +78,22 @@ def room(request, pk):
     # Render the room template with the provided context
     return render(request, 'discord/room.html', context)
 
+# Define the view for the login page
+def loginPage(request):
+    # Set the current page to 'login'
+    page = 'login'
+
+    # If the user is already authenticated, redirect them to the home page
+    if request.user.is_authenticated:
+        return redirect('discord:home')
+
+    # If the request method is POST (i.e., form submission)
+    if request.method == 'POST':
+        # Retrieve the username and password from the form data
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+
 # Define the view for creating a room
 @login_required(login_url='login')  # Ensure that the user is logged in before accessing this view
 def createRoom(request):
