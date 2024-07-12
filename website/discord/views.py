@@ -133,6 +133,21 @@ def registerPage(request):
         # Bind the form with the POST data
         form = UserCreationForm(request.POST)
         # Check if the form data is valid
+                if form.is_valid():
+            # Save the form data to create a new user, without committing to the database yet
+            user = form.save(commit=False)
+            # Convert the username to lowercase
+            user.username = user.username.lower()
+            # Save the user to the database
+            user.save()
+            # Log in the newly registered user
+            login(request, user)
+            # Redirect the user to the home page
+            return redirect('discord:home')
+        else:
+            # If form validation fails, display an error message
+            messages.error(request, 'An error occurred during registration')
+
 
 
 # Define the view for creating a room
