@@ -116,6 +116,13 @@ def loginPage(request):
     # Render the login/register template with the provided context
     return render(request, 'discord/login_register.html', context)
 
+# Define the view for logging out a user
+def logoutUser(request):
+    # Log out the current user
+    logout(request)
+    # Redirect the user to the home page
+    return redirect('discord:home')
+
 
 # Define the view for creating a room
 @login_required(login_url='login')  # Ensure that the user is logged in before accessing this view
