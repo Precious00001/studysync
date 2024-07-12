@@ -110,6 +110,11 @@ def loginPage(request):
         # If authentication fails, display an error message
         else:
             messages.error(request, 'CustomUsername OR password does not exist')
+    # Prepare the context to be passed to the template
+    context = {'page': page}
+
+    # Render the login/register template with the provided context
+    return render(request, 'discord/login_register.html', context)
 
 
 # Define the view for creating a room
