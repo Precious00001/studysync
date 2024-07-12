@@ -78,6 +78,43 @@ def room(request, pk):
     # Render the room template with the provided context
     return render(request, 'discord/room.html', context)
 
+# Define the view for creating a room
+@login_required(login_url='login')  # Ensure that the user is logged in before accessing this view
+def createRoom(request):
+    # Create an instance of RoomForm
+    form = RoomForm()
+    
+    # Retrieve all topics
+    topics = Topic.objects.all()
+    
+    # If the request method is POST (i.e., form submission)
+    if request.method == 'POST':
+        # Retrieve the topic name from the form data
+        topic_name = request.POST.get('topic')
+        # Get or create a topic object with the retrieved name
+        topic, created = Topic.objects.get_or_create(name=topic_name)
+
+        # Create a new room object with the submitted data
+        Room.objects.create(
+            host=request.user,                          # The user creating the room
+            topic=topic,                                # The topic associated with the room
+            name=request.POST.get('name'),              # The name of the room
+            description=request.POST.get('description') # The description of the room
+        )
+        
+        # Redirect the user to the home page after creating the room
+        return redirect('discord:home')
+
+    # Prepare the context to be passed to the template
+    context = {
+        'form': form,     # Room creation form
+        'topics': topics  # All topics
+    }
+    
+    # Render the room creation form template with the provided context
+    return render(request, 'discord/room_form.html', context)
+
+
 # View for updating user profile
 @login_required(login_url='login')  # Ensure that the user is logged in before accessing this view
 def updateUser(request):
