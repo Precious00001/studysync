@@ -8,6 +8,9 @@ urlpatterns = [
     path('room/<str:pk>/', views.room, name="room"),     # URL for individual room page
    # path('profile/', views.userProfile, name="user-profile"),  # URL for user profile page
 
+    # Room management URLs
+    path('create-room/', views.createRoom, name="create-room"),  # URL for creating a new room
+
    # User profile management URL
     path('update-user/', views.updateUser, name="update-user"),  # URL for updating user profile
 
