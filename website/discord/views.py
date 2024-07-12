@@ -109,3 +109,10 @@ def topicsPage(request):
     # Render the topics template with the provided context
     return render(request, 'discord/topics.html', {'topics': topics})
 
+# View for displaying activity
+def activityPage(request):
+    # Retrieve all messages
+    room_messages = Message.objects.all()
+    # Render the activity template with the provided context
+    return render(request, 'discord/activity.html', {'room_messages': room_messages})
+
