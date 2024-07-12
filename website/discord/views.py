@@ -123,6 +123,17 @@ def logoutUser(request):
     # Redirect the user to the home page
     return redirect('discord:home')
 
+# Define the view for the registration page
+def registerPage(request):
+    # Create an instance of UserCreationForm
+    form = UserCreationForm()
+    
+    # If the request method is POST (i.e., form submission)
+    if request.method == 'POST':
+        # Bind the form with the POST data
+        form = UserCreationForm(request.POST)
+        # Check if the form data is valid
+
 
 # Define the view for creating a room
 @login_required(login_url='login')  # Ensure that the user is logged in before accessing this view
