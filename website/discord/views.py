@@ -219,6 +219,17 @@ def updateUser(request):
     # Create a form instance for updating the user profile with existing data
     form = UserForm(instance=user)
 
+    # If the request method is POST (i.e., form submission)
+    if request.method == 'POST':
+        # Bind the form with the POST data
+        form = UserForm(request.POST, request.FILES, instance=user)
+        # Check if the form data is valid
+        if form.is_valid():
+            # Save the form data to update the user profile
+            form.save()
+            # Redirect the user to their profile page after updating the profile
+            return redirect('discord:user-profile', pk=user.id)
+
 # View for displaying topics
 def topicsPage(request):
     # Get the value of 'q' from the query parameters, defaulting to an empty string if not present
