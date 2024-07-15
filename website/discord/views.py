@@ -151,6 +151,21 @@ def room(request, pk):
     # Render the room template with the provided context
     return render(request, 'discord/room.html', context)
 
+# Define the view for a user's profile
+def userProfile(request):
+    # Retrieve the user object with the specified primary key (pk)
+    # user = CustomUser.objects.get(id=pk)
+    user = request.user
+    
+    # Retrieve all rooms associated with the user
+    rooms = user.room_set.all()
+    
+    # Retrieve all messages sent by the user
+    room_messages = user.message_set.all()
+    
+    # Retrieve all topics
+    topics = Topic.objects.all()
+
 
 # Define the view for creating a room
 @login_required(login_url='login')  # Ensure that the user is logged in before accessing this view
