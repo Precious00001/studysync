@@ -166,6 +166,17 @@ def userProfile(request):
     # Retrieve all topics
     topics = Topic.objects.all()
 
+    # Prepare the context to be passed to the template
+    context = {
+        'user': user,                   # The current user
+        'rooms': rooms,                 # Rooms associated with the user
+        'room_messages': room_messages, # Messages sent by the user
+        'topics': topics                # All topics
+    }
+    
+    # Render the profile template with the provided context
+    return render(request, 'discord/profile.html', context)
+
 
 # Define the view for creating a room
 @login_required(login_url='login')  # Ensure that the user is logged in before accessing this view
