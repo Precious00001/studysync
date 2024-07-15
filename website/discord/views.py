@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
@@ -6,11 +5,85 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
-# from django.contrib.auth.models import CustomUser
 from .models import Room, Topic, Message, CustomUser
 from .forms import RoomForm, UserForm
 
 # Create your views here.
+
+# Define the view for the login page
+def loginPage(request):
+    # Set the current page to 'login'
+    page = 'login'
+
+    # If the user is already authenticated, redirect them to the home page
+    if request.user.is_authenticated:
+        return redirect('discord:home')
+
+    # If the request method is POST (i.e., form submission)
+    if request.method == 'POST':
+        # Retrieve the username and password from the form data
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        # Attempt to find a user with the given username
+        try:
+            user = CustomUser.objects.get(username=username)
+        # If the user does not exist, display an error message
+        except CustomUser.DoesNotExist:
+            messages.error(request, 'CustomUser does not exist')
+
+        # Authenticate the user using the provided credentials
+        user = authenticate(request, username=username, password=password)
+
+        # If authentication is successful, log the user in and redirect to the home page
+        if user is not None:
+            login(request, user)
+            return redirect('discord:home')
+        # If authentication fails, display an error message
+        else:
+            messages.error(request, 'CustomUsername OR password does not exist')
+
+    # Prepare the context to be passed to the template
+    context = {'page': page}
+
+    # Render the login/register template with the provided context
+    return render(request, 'discord/login_register.html', context)
+
+# Define the view for logging out a user
+def logoutUser(request):
+    # Log out the current user
+    logout(request)
+    # Redirect the user to the home page
+    return redirect('discord:home')
+
+
+# Define the view for the registration page
+def registerPage(request):
+    # Create an instance of UserCreationForm
+    form = UserCreationForm()
+    
+    # If the request method is POST (i.e., form submission)
+    if request.method == 'POST':
+        # Bind the form with the POST data
+        form = UserCreationForm(request.POST)
+        # Check if the form data is valid
+        if form.is_valid():
+            # Save the form data to create a new user, without committing to the database yet
+            user = form.save(commit=False)
+            # Convert the username to lowercase
+            user.username = user.username.lower()
+            # Save the user to the database
+            user.save()
+            # Log in the newly registered user
+            login(request, user)
+            # Redirect the user to the home page
+            return redirect('discord:home')
+        else:
+            # If form validation fails, display an error message
+            messages.error(request, 'An error occurred during registration')
+
+    # Render the login/register template with the form (whether it's empty or bound with data)
+    return render(request, 'discord/login_register.html', {'form': form})
 
 # Define the view for the home page
 def home(request):
@@ -78,80 +151,6 @@ def room(request, pk):
     # Render the room template with the provided context
     return render(request, 'discord/room.html', context)
 
-# Define the view for the login page
-def loginPage(request):
-    # Set the current page to 'login'
-    page = 'login'
-
-    # If the user is already authenticated, redirect them to the home page
-    if request.user.is_authenticated:
-        return redirect('discord:home')
-
-    # If the request method is POST (i.e., form submission)
-    if request.method == 'POST':
-        # Retrieve the username and password from the form data
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        # Attempt to find a user with the given username
-        try:
-            user = CustomUser.objects.get(username=username)
-        # If the user does not exist, display an error message
-        except CustomUser.DoesNotExist:
-            messages.error(request, 'CustomUser does not exist')
-
-        # Authenticate the user using the provided credentials
-        user = authenticate(request, username=username, password=password)
-
-        # If authentication is successful, log the user in and redirect to the home page
-        if user is not None:
-            login(request, user)
-            return redirect('discord:home')
-        # If authentication fails, display an error message
-        else:
-            messages.error(request, 'CustomUsername OR password does not exist')
-    # Prepare the context to be passed to the template
-    context = {'page': page}
-
-    # Render the login/register template with the provided context
-    return render(request, 'discord/login_register.html', context)
-
-# Define the view for logging out a user
-def logoutUser(request):
-    # Log out the current user
-    logout(request)
-    # Redirect the user to the home page
-    return redirect('discord:home')
-
-# Define the view for the registration page
-def registerPage(request):
-    # Create an instance of UserCreationForm
-    form = UserCreationForm()
-    
-    # If the request method is POST (i.e., form submission)
-    if request.method == 'POST':
-        # Bind the form with the POST data
-        form = UserCreationForm(request.POST)
-        # Check if the form data is valid
-        if form.is_valid():
-            # Save the form data to create a new user, without committing to the database yet
-            user = form.save(commit=False)
-            # Convert the username to lowercase
-            user.username = user.username.lower()
-            # Save the user to the database
-            user.save()
-            # Log in the newly registered user
-            login(request, user)
-            # Redirect the user to the home page
-            return redirect('discord:home')
-        else:
-            # If form validation fails, display an error message
-            messages.error(request, 'An error occurred during registration')
-        
-    # Render the login/register template with the form (whether it's empty or bound with data)
-    return render(request, 'discord/login_register.html', {'form': form})
-
-
 
 # Define the view for creating a room
 @login_required(login_url='login')  # Ensure that the user is logged in before accessing this view
@@ -211,6 +210,14 @@ def updateUser(request):
 
     # Render the user profile update form template with the provided context
     return render(request, 'discord/update-user.html', {'form': form})
+
+# View for updating user profile
+@login_required(login_url='login')  # Ensure that the user is logged in before accessing this view
+def updateUser(request):
+    # Retrieve the current user
+    user = request.user
+    # Create a form instance for updating the user profile with existing data
+    form = UserForm(instance=user)
 
 # View for displaying topics
 def topicsPage(request):
