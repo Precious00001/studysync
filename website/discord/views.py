@@ -219,7 +219,8 @@ def updateUser(request):
     # Create a form instance for updating the user profile with existing data
     form = UserForm(instance=user)
 
-    # If the request method is POST (i.e., form submission)
+    
+# If the request method is POST (i.e., form submission)
     if request.method == 'POST':
         # Bind the form with the POST data
         form = UserForm(request.POST, request.FILES, instance=user)
@@ -229,6 +230,8 @@ def updateUser(request):
             form.save()
             # Redirect the user to their profile page after updating the profile
             return redirect('discord:user-profile', pk=user.id)
+        # Render the user profile update form template with the provided context
+        return render(request, 'discord/update-user.html', {'form': form})
 
 # View for displaying topics
 def topicsPage(request):
