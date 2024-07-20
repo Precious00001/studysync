@@ -48,7 +48,7 @@ class Room(models.Model):
 # Model representing a message in a chat room
 class Message(models.Model):
     # CustomUser who sent the message
-    CustomUser = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     # Room in which the message was sent
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     # Content of the message
