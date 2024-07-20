@@ -131,7 +131,9 @@ STATIC_ROOT = (BASE_DIR / 'static')
 MEDIA_ROOT = (BASE_DIR / 'media')
 MEDIA_URL = '/media/'
 
-
+ACCOUNT_LOGOUT_REDIRECT_URL = 'discord:home'
+ACCOUNT_LOGOUT_ON_GET = True
+LOGIN_REDIRECT_URL = 'discord:user-profile'
 
 
 # Default primary key field type
