@@ -179,7 +179,7 @@ def userProfile(request):
 
 
 # Define the view for creating a room
-@login_required(login_url='login')  # Ensure that the user is logged in before accessing this view
+@login_required(login_url='discord:login')  # Ensure that the user is logged in before accessing this view
 def createRoom(request):
     # Create an instance of RoomForm
     form = RoomForm()
@@ -249,6 +249,46 @@ def updateRoom(request, pk):
     
     # Render the room update form template with the provided context
     return render(request, 'discord/room_form.html', context)
+
+# View for deleting a room
+@login_required(login_url='discord:login')  # Ensure that the user is logged in before accessing this view
+def deleteRoom(request, pk):
+    # Retrieve the room object with the specified primary key (pk)
+    room = Room.objects.get(id=pk)
+
+    # Check if the current user is the host of the room
+    if request.user != room.host:
+        return HttpResponse('You are not allowed here!!!')
+
+    # If the request method is POST (i.e., form submission)
+    if request.method == 'POST':
+        # Delete the room object
+        room.delete()
+        # Redirect the user to the home page after deleting the room
+        return redirect('discord:home')
+    
+    # Render the room deletion confirmation template
+    return render(request, 'discord/delete.html', {'obj': room})
+
+# View for deleting a message
+@login_required(login_url='discord:login')  # Ensure that the user is logged in before accessing this view
+def deleteMessage(request, pk):
+    # Retrieve the message object with the specified primary key (pk)
+    message = Message.objects.get(id=pk)
+
+    # Check if the current user is the author of the message
+    if request.user != message.user:
+        return HttpResponse('You are not allowed here!!!')
+
+    # If the request method is POST (i.e., form submission)
+    if request.method == 'POST':
+        # Delete the message object
+        message.delete()
+        # Redirect the user to the home page after deleting the message
+        return redirect('discord:home')
+    
+    # Render the message deletion confirmation template
+    return render(request, 'discord/delete.html', {'obj': message})
 
 
 
