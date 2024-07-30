@@ -7,7 +7,7 @@
     <div class="room">
       <div class="room__top">
         <div class="room__topLeft">
-          <a href="{% url 'home' %}">
+          <a href="{% url 'discord:home' %}">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
               <title>arrow-left</title>
               <path
@@ -19,7 +19,7 @@
         </div>
         {% if room.host == request.user %}
         <div class="room__topRight">
-          <a href="{% url 'update-room' room.id %}">
+          <a href="{% url 'discord:update-room' room.id %}">
             <svg enable-background="new 0 0 24 24" height="32" viewBox="0 0 24 24" width="32"
               xmlns="http://www.w3.org/2000/svg">
               <title>edit</title>
@@ -38,7 +38,7 @@
               </g>
             </svg>
           </a>
-          <a href="{% url 'delete-room' room.id %}">
+          <a href="{% url 'discord:delete-room' room.id %}">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
               <title>remove</title>
               <path
@@ -81,7 +81,7 @@
             <div class="thread">
               <div class="thread__top">
                 <div class="thread__author">
-                  <a href="{% url 'user-profile' message.user.id %}" class="thread__authorInfo">
+                  <a href="{% url 'discord:user-profile' message.user.id %}" class="thread__authorInfo">
                     <div class="avatar avatar--small">
                       <img src="{{message.user.avatar.url}}" />
                     </div>
@@ -91,7 +91,7 @@
                 </div>
 
                 {% if request.user == message.user %}
-                <a href="{% url 'delete-message' message.id %}">
+                <a href="{% url 'discord:delete-message' message.id %}">
                   <div class="thread__delete">
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                       <title>remove</title>
@@ -126,7 +126,7 @@
       <h3 class="participants__top">Participants <span>({{participants.count}} Joined)</span></h3>
       <div class="participants__list scroll">
         {% for user in participants %}
-        <a href="{%  url 'user-profile' user.id %}" class="participant">
+        <a href="{%  url 'discord:user-profile' user.id %}" class="participant">
           <div class="avatar avatar--medium">
             <img src="{{user.avatar.url}}" />
           </div>
